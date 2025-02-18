@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fragaria - Dashboard{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>{% block header %}Bienvenido, {{ user.first_name }}!{% endblock %}</h1>
+        <nav>
+            <ul>
+                
+
+                {% if user.is_authenticated %}
+                    <!-- Enlaces accesibles solo si el usuario está autenticado -->
+                    <li><a href="{% url 'inicio' %}">Inicio</a></li>
+                {% else %}
+                    <!-- Enlaces visibles solo para usuarios no autenticados -->
+                    <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        {% if user.is_authenticated %}
+            <nav>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                </form>
+            </nav>
+        {% endif %}
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Aquí va el contenido específico de cada página -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Fragaria - Sistema de monitoreo de cultivo de fresas</p>
+    </footer>
+</body>
+</html>

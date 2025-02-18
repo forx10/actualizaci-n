@@ -1,0 +1,9 @@
+
+<h1>Registro</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrarse</button>
+
+    <button onclick="window.history.back();">Volver </button>
+</form>

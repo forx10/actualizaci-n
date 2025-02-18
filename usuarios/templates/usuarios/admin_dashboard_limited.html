@@ -1,0 +1,33 @@
+<!-- templates/admin_dashboard_limited.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administración - Administrador</title>
+</head>
+<body>
+    <h1>Bienvenido, {{ user.first_name }} (Administrador)</h1>
+    <p>Este es el panel de administración limitado.</p>
+    
+    <!-- Aquí podrías agregar secciones o enlaces a áreas limitadas que solo pueden ver los administradores -->
+    <ul>
+        <li><a href="{% url 'gestion_usuarios' %}">Gestionar Empleados</a></li>
+        <li><a href="{% url 'plantacion' %}">Mis Plantaciones</a></li>
+        <li><a href="{% url 'registrar_plantacion' %}">Registrar Plantación</a></li>
+        <li><a href="{% url 'informes' %}">Ver informes</a></li>
+    </ul>
+
+    
+    <main>
+        {% block content %}
+        <!-- Aquí va el contenido específico de cada página -->
+        {% endblock %}
+    </main>
+    
+    <!-- usuarios/templates/usuarios/base.html o cualquier otra plantilla -->
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+    </form>
+</body>
+</html>

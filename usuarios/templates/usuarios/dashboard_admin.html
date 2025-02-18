@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador - Fragaria</title>
+</head>
+<body>
+    <header>
+        <h1>Bienvenido, {{ user.username }} (Administrador)</h1>
+        <nav>
+            <ul>
+                {% comment %} <li><a href="{% url 'cronograma' %}">Cronograma</a></li> {% endcomment %}
+                <li><a href="{% url 'siembra' %}">Siembra</a></li>
+                {% comment %} <li><a href="{% url 'tareas' %}">Tareas</a></li> {% endcomment %} 
+                <li><a href="{% url 'gestion_usuarios' %}">Gestión de Usuarios</a></li>
+                {% comment %} <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li> {% endcomment %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Información de tu cuenta</h2>
+            <p>Nombre de usuario: {{ user.username }}</p>
+            <p>Correo electrónico: {{ user.email }}</p>
+        </section>
+
+        <section>
+            <h2>Notificaciones</h2>
+            <ul>
+                <li>Revisión de tareas de usuarios pendientes.</li>
+                <li>Nuevo usuario registrado hoy.</li>
+                <li>Actualización de estadísticas de plantación.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Estadísticas del Sistema</h2>
+            <p>Usuarios registrados: {{ total_usuarios }}</p>
+            <p>Proyectos activos: {{ total_proyectos }}</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Fragaria - Sistema de monitoreo de cultivo de fresas</p>
+    </footer>
+</body>
+</html>

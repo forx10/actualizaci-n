@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Actividades</title>
+</head>
+<body>
+    <h1>Lista de Actividades</h1>
+
+    <ul>
+        {% for actividad in actividades %}
+            <li>{{ actividad.nombre_actividad }} - Estado: {{ actividad.get_estado }}</li>
+        {% empty %}
+            <li>No hay actividades registradas.</li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="{% url 'registrar_actividad' %}">Registrar nueva actividad</a>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!-- templates/lista_plantaciones.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Plantaciones</h2>
+    <ul>
+        {% for plantacion in plantaciones %}
+            <li>{{ plantacion.nombre }} - {{ plantacion.fecha_siembra }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

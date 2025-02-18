@@ -1,0 +1,7 @@
+<h1>Agregar Usuario</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear Usuario</button>
+    <a href="{% url 'gestion_usuarios' %}">Volver</a>
+</form>

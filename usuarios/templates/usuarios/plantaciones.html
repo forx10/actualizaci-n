@@ -1,0 +1,17 @@
+{% extends 'usuarios/admin_dashboard_limited.html' %}
+
+{% block title %}Mis Plantaciones{% endblock %}
+
+{% block content %}
+    <h2>Mis Plantaciones</h2>
+    
+    {% if plantaciones %}
+    <ul>
+        {% for plantacion in plantaciones %}
+            <li>{{ plantacion.nombre }} - {{ plantacion.fecha_siembra }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No tienes plantaciones registradas.</p>
+    {% endif %}
+{% endblock %}

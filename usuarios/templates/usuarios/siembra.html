@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantación</title>
+</head>
+<body>
+    <h1>¡Ingresa tu siembra!</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="fechas_recomendadas">Fechas recomendadas para la siembra:</label>
+        <select name="fecha_recomendada" id="fechas_recomendadas">
+            <option value="">Selecciona una fecha</option>
+            {% for fecha in fechas_recomendadas %}
+                <option value="{{ fecha }}">{{ fecha }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="fecha_personalizada">Seleccionar fecha personalizada:</label>
+        <input type="date" name="fecha_personalizada" id="fecha_personalizada">
+        <br><br>
+        <button type="submit">Aceptar</button>
+    </form>
+
+    {% if temperatura and descripcion %}
+        <h2>Clima en {{ ubicacion }}:</h2>
+        <p>Temperatura: {{ temperatura }}°C</p>
+        <p>Descripción: {{ descripcion }}</p>
+        <p>Humedad: {{ humedad }}%</p>
+        <p>Presión: {{ presion }} hPa</p>
+        <p>Velocidad del viento: {{ velocidad_viento }} m/s</p>
+    {% else %}
+        <p>No se pudo obtener el clima.</p>
+    {% endif %}
+</body>
+</html>

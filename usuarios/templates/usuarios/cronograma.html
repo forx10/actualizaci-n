@@ -1,0 +1,31 @@
+<!-- usuarios/templates/usuarios/cronograma.html -->
+<h1>Cronograma de Actividades</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Actividad</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for actividad in actividades %}
+            <tr>
+                <td>{{ actividad.nombre }}</td>
+                <td>{{ actividad.fecha }}</td>  <!-- Asegúrate de tener un campo fecha en el modelo Actividad -->
+                <td>{{ actividad.estado }}</td>  <!-- Cambia esto por el campo correcto de estado -->
+                <td>
+                    <a href="{% url 'registrar_estado_actividad' actividad.id %}">Registrar Estado</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">No hay actividades programadas en el cronograma.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'registrar_actividad' %}">Registrar nueva actividad</a>

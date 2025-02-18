@@ -1,0 +1,16 @@
+<h2>¿Estás seguro de que deseas eliminar al usuario {{ usuario.first_name }} {{ usuario.last_name }}?</h2>
+<p>Correo: {{ usuario.email }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Eliminar Usuario</button>
+    <a href="{% url 'gestion_usuarios' %}">Cancelar</a>
+</form>
+
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}

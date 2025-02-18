@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Empleados</title>
+</head>
+<body>
+    <header>
+        <h1>Gestión de Empleados</h1>
+    </header>
+
+    <main>
+        <!-- Botón de agregar usuario -->
+        <div>
+            <a href="{% url 'agregar_usuario' %}">Agregar Empleado</a>
+        </div>
+
+       <!-- usuarios/templates/usuarios/gestion_usuarios.html -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Activo</th>
+                    <th>Es Staff</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.is_active }}</td>
+                    <td>{{ usuario.is_staff }}</td>
+                    <td>
+                        <a href="{% url 'editar_usuario' usuario.id %}">Editar</a>
+                        <a href="{% url 'eliminar_usuario' usuario.id %}">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <a href="{% url 'admin_dashboard_limited' %}">Volver</a>
+
+    <footer>
+        <p>&copy; 2024 Fragaria</p>
+    </footer>
+</body>
+</html>

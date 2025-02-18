@@ -1,0 +1,22 @@
+<!-- registrar_estado_actividad.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Estado de Actividad</title>
+</head>
+<body>
+
+<h1>Registrar Estado para la Actividad "{{ actividad.nombre_actividad }}"</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Renderiza el formulario como párrafos -->
+    <button type="submit">Registrar Estado</button>
+</form>
+
+<a href="{% url 'lista_actividades' %}">Volver a la lista de actividades</a>
+
+</body>
+</html>

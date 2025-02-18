@@ -1,0 +1,10 @@
+<!-- usuarios/templates/usuarios/registrar_plantacion.html -->
+<h1>Registrar Nueva Plantación</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrar</button>
+</form>
+
+<a href="{% url 'admin_dashboard_limited' %}">Volver a la lista de plantaciones</a>
