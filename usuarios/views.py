@@ -24,6 +24,8 @@ from .models import Actividad, EstadoActividad
 from .forms import ActividadForm, EstadoActividadForm
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 
 
@@ -39,10 +41,11 @@ def mi_vista(request):
     return redirect('nombre_de_la_url')
 
 
-
+csrf_exempt
 def iniciar_sesion(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        data = json.load(request.body)
+        form = LoginForm(data)
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
@@ -68,10 +71,29 @@ def iniciar_sesion(request):
 
 
 
+
 @login_required
 def admin_dashboard_limited(request):
-    return render(request, 'usuarios/admin_dashboard_limited.html')
+    ubicacion = 'Pereira'
+    clima_data = obtener_clima(ubicacion)
 
+    # Simplificar la asignación de variables relacionadas con el clima
+    temperatura = clima_data.get('temperatura') if clima_data else None
+    descripcion = clima_data.get('descripcion') if clima_data else None
+    humedad = clima_data.get('humedad') if clima_data else None
+    presion = clima_data.get('presion') if clima_data else None
+    velocidad_viento = clima_data.get('velocidad_viento') if clima_data else None
+    
+    return render(request,'usuarios/admin_dashboard_limited.html', {
+        'temperatura': temperatura,
+        'descripcion': descripcion,
+        'humedad': humedad,
+        'presion': presion,
+        'velocidad_viento': velocidad_viento,
+        'ubicacion': ubicacion,
+    })
+    
+    
 @login_required
 def dashboard_admin(request):
     if not request.user.is_superuser:
@@ -87,7 +109,24 @@ def dashboard_admin(request):
         'total_usuarios': total_usuarios,
         'total_proyectos': total_proyectos,
     }
-    return render(request, 'usuarios/admin_dashboard_limited.html', context)
+    ubicacion = 'Pereira'
+    clima_data = obtener_clima(ubicacion)
+
+    # Simplificar la asignación de variables relacionadas con el clima
+    temperatura = clima_data.get('temperatura') if clima_data else None
+    descripcion = clima_data.get('descripcion') if clima_data else None
+    humedad = clima_data.get('humedad') if clima_data else None
+    presion = clima_data.get('presion') if clima_data else None
+    velocidad_viento = clima_data.get('velocidad_viento') if clima_data else None
+    
+    return render(request,'usuarios/admin_dashboard_limited.html', context, {
+        'temperatura': temperatura,
+        'descripcion': descripcion,
+        'humedad': humedad,
+        'presion': presion,
+        'velocidad_viento': velocidad_viento,
+        'ubicacion': ubicacion,
+    })
 
 #Se verifica si el login cuenta con credenciales creadas mediante superUser, si es el caso, se valida y tiene acceso a los empleados 
 
@@ -133,6 +172,7 @@ def agregar_usuario(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password1'])
+            user.is_staff = False
             user.admin_creator = request.user
             user.save()
             messages.success(request, "Usuario creado exitosamente.")
@@ -354,31 +394,28 @@ def obtener_clima(ubicacion):
     except requests.exceptions.RequestException as e:
         print(f"Error al obtener datos del clima: {e}")
         return None
+    
+    
 
-def seleccion_siembra(request):
-    # Lista de fechas recomendadas
-    fechas_recomendadas = [
-        "2024-01-15",
-        "2024-02-20",
-        "2024-03-10",
-        "2024-04-05",
-        "2024-05-12",
-    ]
 
-    ubicacion = 'Pereira'  # Cambia esto por la ciudad deseada
+
+# Vista para mostrar todas las plantaciones
+@login_required
+def plantacion(request):
+    
+    plantaciones = Plantacion.objects.filter(usuario=request.user)
+    # return render(request, 'usuarios/plantaciones.html', {'plantaciones': plantaciones})
+    ubicacion = 'Pereira'
     clima_data = obtener_clima(ubicacion)
 
-    if clima_data:
-        temperatura = clima_data['temperatura']
-        descripcion = clima_data['descripcion']
-        humedad = clima_data['humedad']
-        presion = clima_data['presion']
-        velocidad_viento = clima_data['velocidad_viento']
-    else:
-        temperatura = descripcion = humedad = presion = velocidad_viento = None
-
-    return render(request, 'usuarios/siembra.html', {
-        'fechas_recomendadas': fechas_recomendadas,
+    # Simplificar la asignación de variables relacionadas con el clima
+    temperatura = clima_data.get('temperatura') if clima_data else None
+    descripcion = clima_data.get('descripcion') if clima_data else None
+    humedad = clima_data.get('humedad') if clima_data else None
+    presion = clima_data.get('presion') if clima_data else None
+    velocidad_viento = clima_data.get('velocidad_viento') if clima_data else None
+    
+    return render(request,'usuarios/plantaciones.html', {'plantaciones': plantaciones, 
         'temperatura': temperatura,
         'descripcion': descripcion,
         'humedad': humedad,
@@ -386,41 +423,118 @@ def seleccion_siembra(request):
         'velocidad_viento': velocidad_viento,
         'ubicacion': ubicacion,
     })
+    
 
-# Vista para mostrar todas las plantaciones
-@login_required
-def plantacion(request):
-    plantaciones = Plantacion.objects.all()  # Obtener todas las plantaciones
-    return render(request, 'usuarios/plantaciones.html', {'plantaciones': plantaciones})
+TRADUCCION_CLIMA = {
+        "Clear": "Despejado",
+        "Clouds": "Nublado",
+        "Rain": "Lluvia",
+        "Drizzle": "Llovizna",
+        "Thunderstorm": "Tormenta",
+        "Snow": "Nieve",
+        "Mist": "Neblina",
+        "Smoke": "Humo",
+        "Haze": "Bruma",
+        "Dust": "Polvo",
+        "Fog": "Niebla",
+        "Sand": "Arena",
+        "Ash": "Ceniza",
+        "Squall": "Chubasco",
+        "Tornado": "Tornado",
+        "light rain": "llovizna",
+        "moderate rain": "lluvia moderada",
+        "heavy intensity rain": "lluvia intensa",
+        "very heavy rain": "lluvia muy intensa",
+        "extreme rain": "lluvia extrema",
+        "freezing rain": "lluvia helada",
+        "thunderstorm": "tormenta",
+        "snow": "nieve",
+        "mist": "neblina",
+        "drizzle": "llovizna",
+        "overcast clouds": "nubes cubiertas",
+        "scattered clouds": "nubes dispersas",
+        "broken clouds": "nubes rotas",
+        "few clouds": "pocas nubes"
+}
 
-@login_required
-def lista_plantaciones(request):
-    plantaciones = Plantacion.objects.filter(usuario=request.user)  # Filtra las plantaciones por el usuario logueado
-    return render(request, 'lista_plantaciones.html', {'plantaciones': plantaciones})
+
 
 # Vista para registrar una nueva plantación
 @login_required
 def registrar_plantacion(request):
+    
     if request.method == 'POST':
         form = PlantacionForm(request.POST)
         if form.is_valid():
-            # Crear la plantación sin guardarla aún
             plantacion = form.save(commit=False)
-            
-            # Asignar el usuario logueado a la plantación
             plantacion.usuario = request.user
-            
-            # Ahora guarda la plantación
-            plantacion.save()
+            fecha_recomendada = request.POST.get('fecha_recomendada')
+            fecha_personalizada = request.POST.get('fecha_personalizada')
+            if fecha_personalizada:
+                plantacion.fecha_siembra = fecha_personalizada
+            elif fecha_recomendada:
+                plantacion.fecha_siembra = fecha_recomendada
+            else:
+                messages.error(request, 'Debes seleccionar una fecha de siembra.')
+                return render(request, 'usuarios/registrar_plantacion.html', {
+                    'form': form,
+                    'fechas_recomendadas': fechas_recomendadas})
+                
+        plantacion.save()
 
-            # Mensaje de éxito
-            messages.success(request, 'Plantación registrada correctamente.')
-            return redirect('plantacion')  # Redirige a la vista que muestra las plantaciones
+        messages.success(request, 'Plantación registrada correctamente.')
+        return redirect('plantaciones')
     else:
         form = PlantacionForm()
-    
-    return render(request, 'usuarios/registrar_plantacion.html', {'form': form})
+        API_KEY = 'b38f3f8558d7bee2759f548984ae5505'  
+        ubicacion = 'Pereira,CO'  
+        url = f"http://api.openweathermap.org/data/2.5/forecast?q={ubicacion}&appid={API_KEY}&units=metric"
 
+        # Obtener datos del clima
+        response = requests.get(url)
+        if response.status_code != 200:
+            messages.error(request, 'No se pudo obtener el clima. Inténtalo de nuevo más tarde.')
+            return render(request, 'usuarios/registrar_plantacion.html', {'form': form})
+
+        clima_data = response.json()
+        fechas_recomendadas = []
+
+        # Filtrar fechas con clima templado
+        for pronostico in clima_data['list']:
+            fecha = pronostico['dt_txt']  # Fecha en formato 'año-mes-dia h:min:seg'
+            temperatura = pronostico['main']['temp']
+            if 15 <= temperatura <= 25:  # Rango de clima templado
+                fecha_formateada = datetime.strptime(fecha, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
+                if fecha_formateada not in fechas_recomendadas:  # Evitar duplicados
+                    fechas_recomendadas.append(fecha_formateada)
+                    
+
+
+        clima_actual_url = f"http://api.openweathermap.org/data/2.5/weather?q={ubicacion}&appid={API_KEY}&units=metric"
+        clima_actual_response = requests.get(clima_actual_url)
+        if clima_actual_response.status_code == 200:
+            clima_actual_data = clima_actual_response.json()
+            temperatura_actual = clima_actual_data['main']['temp']
+            descripcion_ingles = clima_actual_data['weather'][0]['description']
+            descripcion_actual = TRADUCCION_CLIMA.get(descripcion_ingles, descripcion_ingles)
+            humedad_actual = clima_actual_data['main']['humidity']
+            presion_actual = clima_actual_data['main']['pressure']
+            velocidad_viento_actual = clima_actual_data['wind']['speed']
+        else:
+            temperatura_actual = descripcion_actual = humedad_actual = presion_actual = velocidad_viento_actual = None
+
+        return render(request, 'usuarios/registrar_plantacion.html', {
+            'form': form,
+            'fechas_recomendadas': fechas_recomendadas,
+            'temperatura': temperatura_actual,
+            'descripcion': descripcion_actual,
+            'humedad': humedad_actual,
+            'presion': presion_actual,
+            'velocidad_viento': velocidad_viento_actual,
+            'ubicacion': ubicacion,
+        })
+        
+        
 # Vista para registrar una actividad
 def registrar_actividad(request):
     if request.method == 'POST':
@@ -468,8 +582,6 @@ def cronograma(request):
 
 
 
-
-
 @login_required
 def informes(request):
     """
@@ -484,7 +596,33 @@ def informes(request):
 
 
 
+@login_required
+def listar_plantaciones(request):
+    plantaciones = Plantacion.objects.all()  
+    return render(request, 'usuarios/plantaciones.html', {'plantaciones': plantaciones})
 
 
+
+@login_required
+def editar_plantacion(request, id):
+    plantacion = get_object_or_404(Plantacion, id=id)
+    
+    if request.method == 'POST':
+        form = PlantacionForm(request.POST, instance=plantacion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Plantación actualizada correctamente.')
+            return redirect('plantaciones')
+    else:
+        form = PlantacionForm(instance=plantacion)
+    
+    return render(request, 'usuarios/editar_plantacion.html', {'form': form})
+
+@login_required
+def eliminar_plantacion(request, id):
+    plantacion = get_object_or_404(Plantacion, id=id)
+    plantacion.delete()
+    messages.success(request, 'Plantación eliminada correctamente.')
+    return redirect('plantaciones')
 
 

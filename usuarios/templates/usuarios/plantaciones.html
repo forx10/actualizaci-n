@@ -6,11 +6,37 @@
     <h2>Mis Plantaciones</h2>
     
     {% if plantaciones %}
-    <ul>
-        {% for plantacion in plantaciones %}
-            <li>{{ plantacion.nombre }} - {{ plantacion.fecha_siembra }}</li>
-        {% endfor %}
-    </ul>
+    <table border="3">
+        <thead>
+            <tr>
+                <th>Nombre siembra</th>
+                <th>Fecha de Siembra</th>
+                <th>Descripción</th>
+                <th>Acciones</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for plantacion in plantaciones %}
+            <tr>
+                <td>{{ plantacion.nombre }}</td>
+                <td>{{ plantacion.fecha_siembra }}</td>
+                <td>{{ plantacion.descripcion }}</td>
+
+                <td>
+                    <!-- Botón para editar -->
+                    <a href="{% url 'editar_plantacion' plantacion.id %}">Editar</a>
+                    <!-- Botón para eliminar -->
+                    <form action="{% url 'eliminar_plantacion' plantacion.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar esta plantación?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% else %}
         <p>No tienes plantaciones registradas.</p>
     {% endif %}

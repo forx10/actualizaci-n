@@ -97,8 +97,8 @@ class FechasSiembra(models.Model):
 # Modelo de Plantación
 class Plantacion(models.Model):
     nombre = models.CharField(max_length=100)
-    descripcion = models.TextField()
-    fecha_siembra = models.DateField()
+    descripcion = models.TextField(null=True, blank=True)
+    fecha_siembra = models.DateField(null=True, blank=True)  
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='plantaciones')
 
     def __str__(self):
@@ -108,8 +108,9 @@ class Plantacion(models.Model):
 # Modelo de Siembra
 class Siembra(models.Model):
     nombre = models.CharField(max_length=100)
-    fecha_siembra = models.DateField()
-
+    fecha_siembra = models.DateField() 
+    
+    
     # Relación con Plantación
     plantacion = models.ForeignKey(Plantacion, on_delete=models.CASCADE, related_name='siembras')
 

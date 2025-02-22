@@ -45,9 +45,9 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='usuarios/password_reset_complete.html'), name='password_reset_complete'),
 
     # Actividades de fragaria
-    path('siembra/', usuarios_views.seleccion_siembra, name='siembra'),
+    # path('siembra/', usuarios_views.seleccion_siembra, name='siembra'),
     path('plantacion/', usuarios_views.plantacion, name='plantacion'),  # Mostrar las plantaciones
-    path('plantaciones/', usuarios_views.lista_plantaciones, name='lista_plantaciones'),
+    path('plantaciones/', usuarios_views.listar_plantaciones, name='plantaciones'),
     path('registrar-plantacion/', usuarios_views.registrar_plantacion, name='registrar_plantacion'),  # Formulario de registro de plantación
     path('registrar-actividad/', usuarios_views.registrar_actividad, name='registrar_actividad'),
     path('actividades/', usuarios_views.lista_actividades, name='lista_actividades'),
@@ -58,6 +58,9 @@ urlpatterns = [
 
     # URL para informes (si es necesaria)
     path('informes/', usuarios_views.informes, name='informes'),
+    path('editar-plantacion/<int:id>/', usuarios_views.editar_plantacion, name='editar_plantacion'),
+    path('eliminar-plantacion/<int:id>/', usuarios_views.eliminar_plantacion, name='eliminar_plantacion')
+    
 
 
 ]

@@ -51,7 +51,7 @@ class UsuarioForm(UserChangeForm):
 class PlantacionForm(forms.ModelForm):
     class Meta:
         model = Plantacion
-        fields = ['nombre', 'fecha_siembra', 'descripcion']
+        fields = ['nombre', 'descripcion']
         
     # def save(self, commit=True):
     #     plantacion = super().save(commit=False)

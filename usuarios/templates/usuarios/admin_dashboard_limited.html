@@ -15,6 +15,8 @@
         <li><a href="{% url 'plantacion' %}">Mis Plantaciones</a></li>
         <li><a href="{% url 'registrar_plantacion' %}">Registrar Plantación</a></li>
         <li><a href="{% url 'informes' %}">Ver informes</a></li>
+
+
     </ul>
 
     
@@ -29,5 +31,17 @@
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Cerrar sesión</button>
     </form>
+
+
+    {% if temperatura and descripcion %}
+    <h2>Clima en {{ ubicacion }}:</h2>
+    <p>Temperatura: {{ temperatura }}°C</p>
+    <p>Descripción: {{ descripcion }}</p>
+    <p>Humedad: {{ humedad }}%</p>
+    <p>Presión: {{ presion }} hPa</p>
+    <p>Velocidad del viento: {{ velocidad_viento }} m/s</p>
+    {% else %}
+    <p>No se pudo obtener el clima.</p>
+    {% endif %}
 </body>
 </html>
